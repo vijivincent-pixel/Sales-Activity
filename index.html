@@ -4,6 +4,91 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ESM Sales Activity Form</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
+  <style>
+    /* Tom Select overrides for dark theme */
+    .ts-wrapper { width: 100%; }
+    .ts-wrapper.single .ts-control {
+      background: #1a2236 !important;
+      border: 1px solid #1e2d45 !important;
+      border-radius: 10px !important;
+      color: #e8edf5 !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 14px !important;
+      padding: 0 38px 0 14px !important;
+      height: 42px !important;
+      display: flex !important;
+      align-items: center !important;
+      cursor: pointer !important;
+      box-shadow: none !important;
+    }
+    .ts-wrapper.single.focus .ts-control,
+    .ts-wrapper.single .ts-control:focus {
+      border-color: #0072ff !important;
+      box-shadow: 0 0 0 3px rgba(0,114,255,0.15) !important;
+      background: #1e2d45 !important;
+      outline: none !important;
+    }
+    .ts-wrapper .ts-control input {
+      color: #e8edf5 !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 14px !important;
+      background: transparent !important;
+    }
+    .ts-wrapper .ts-control input::placeholder { color: #6b7a99 !important; }
+    .ts-dropdown {
+      background: #111827 !important;
+      border: 1px solid #1e2d45 !important;
+      border-radius: 10px !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+      margin-top: 4px !important;
+      overflow: hidden !important;
+    }
+    .ts-dropdown .ts-dropdown-content { max-height: 220px !important; }
+    .ts-dropdown .option {
+      color: #e8edf5 !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 14px !important;
+      padding: 9px 14px !important;
+    }
+    .ts-dropdown .option:hover,
+    .ts-dropdown .option.active {
+      background: rgba(0,114,255,0.15) !important;
+      color: #00c6ff !important;
+    }
+    .ts-dropdown .option.selected {
+      background: rgba(0,198,255,0.08) !important;
+      color: #00c6ff !important;
+    }
+    .ts-dropdown input.ts-dropdown-search {
+      background: #1a2236 !important;
+      border: none !important;
+      border-bottom: 1px solid #1e2d45 !important;
+      color: #e8edf5 !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 13px !important;
+      padding: 10px 14px !important;
+      width: 100% !important;
+      outline: none !important;
+    }
+    .ts-dropdown input.ts-dropdown-search::placeholder { color: #6b7a99 !important; }
+    .ts-wrapper .ts-control .item { color: #e8edf5 !important; }
+    .ts-wrapper .clear-button { color: #6b7a99 !important; }
+    /* Arrow */
+    .ts-wrapper.single .ts-control::after {
+      content: "" !important;
+      position: absolute !important;
+      right: 14px !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      width: 12px !important; height: 8px !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-size: contain !important;
+    }
+    .ts-wrapper.single.open .ts-control { border-color: #0072ff !important; }
+    .ts-dropdown .no-results { color: #6b7a99 !important; padding: 10px 14px !important; font-size: 13px !important; }
+  </style>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -28,7 +113,7 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 2.5rem 1rem 4rem;
+      padding: 2.5rem 1rem 5rem;
       background-image:
         radial-gradient(ellipse at 20% 10%, rgba(0,114,255,0.12) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 80%, rgba(0,198,255,0.08) 0%, transparent 50%);
@@ -114,17 +199,18 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 1.5rem 1.75rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.75rem;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       transition: border-color 0.2s;
     }
     .card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
+      top: 0; left: 14px; right: 14px;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(0,198,255,0.3), transparent);
+      border-radius: 14px 14px 0 0;
     }
     .card:hover { border-color: rgba(0,198,255,0.2); }
 
@@ -175,7 +261,7 @@
       background-position: right 14px center;
       padding-right: 38px;
     }
-    textarea { padding: 12px 14px; height: 90px; resize: vertical; }
+    textarea { padding: 12px 14px; height: 52px; resize: vertical; }
 
     input:focus, select:focus, textarea:focus {
       border-color: var(--accent2);
@@ -259,7 +345,101 @@
     @media (max-width: 520px) {
       .r2, .r3 { grid-template-columns: 1fr; }
     }
+
+    /* ── Tom Select dark theme overrides ── */
+    .ts-wrapper { width: 100%; }
+    .ts-wrapper.single .ts-control {
+      background: var(--surface2) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      color: var(--text) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 14px !important;
+      min-height: 42px !important;
+      padding: 0 38px 0 14px !important;
+      display: flex; align-items: center;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 14px center !important;
+    }
+    .ts-wrapper.single.focus .ts-control,
+    .ts-wrapper.single .ts-control:hover {
+      border-color: var(--accent2) !important;
+      box-shadow: 0 0 0 3px rgba(0,114,255,0.15) !important;
+      background-color: #1e2d45 !important;
+    }
+    .ts-wrapper .ts-control .ts-input-hidden { display: none; }
+    .ts-wrapper .ts-control input {
+      color: var(--text) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 14px !important;
+      background: transparent !important;
+      caret-color: var(--accent);
+    }
+    .ts-wrapper .ts-control .item {
+      color: var(--text) !important;
+      font-size: 14px !important;
+      background: transparent !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .ts-dropdown {
+      background: #1a2236 !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 14px !important;
+      margin-top: 4px !important;
+      z-index: 9999;
+    }
+    .ts-dropdown .ts-dropdown-content { max-height: 220px; }
+    .ts-dropdown .option {
+      color: var(--label) !important;
+      padding: 9px 14px !important;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+    }
+    .ts-dropdown .option:hover,
+    .ts-dropdown .option.active {
+      background: rgba(0,114,255,0.15) !important;
+      color: var(--text) !important;
+    }
+    .ts-dropdown .option.selected {
+      background: rgba(0,198,255,0.1) !important;
+      color: var(--accent) !important;
+    }
+    .ts-dropdown input.ts-dropdown-search-input {
+      background: var(--surface2) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 6px !important;
+      color: var(--text) !important;
+      font-family: 'DM Sans', sans-serif !important;
+      font-size: 13px !important;
+      margin: 8px !important;
+      width: calc(100% - 16px) !important;
+      padding: 7px 10px !important;
+      outline: none !important;
+      box-sizing: border-box;
+    }
+    .ts-dropdown input.ts-dropdown-search-input:focus {
+      border-color: var(--accent2) !important;
+      box-shadow: 0 0 0 2px rgba(0,114,255,0.15) !important;
+    }
+    .ts-dropdown .no-results {
+      color: var(--muted) !important;
+      padding: 10px 14px !important;
+      font-size: 13px !important;
+    }
+    .ts-wrapper .ts-control .clear-button {
+      color: var(--muted) !important;
+      font-size: 16px !important;
+      right: 30px !important;
+    }
   </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
 </head>
 <body>
 
@@ -331,8 +511,8 @@
       <div class="r2">
         <div class="fg">
           <label>Brand <span class="req">*</span></label>
-          <select name="brand" id="brand" required>
-            <option value="">— select —</option>
+          <select name="brand" class="ts-select" id="brand" required>
+            <option value="">— search or select —</option>
             <option>&Above</option><option>24 Hour Fitness</option><option>5K</option><option>8flow</option>
             <option>A-Line Messenger Service</option><option>AARP</option><option>Abassi Imigration Law</option>
             <option>ABANCA</option><option>Abbott</option><option>Academy Sports &amp; Outdoors</option>
@@ -643,8 +823,8 @@
         </div>
         <div class="fg">
           <label>Industry <span class="req">*</span></label>
-          <select name="industry" id="industry" required>
-            <option value="">— select —</option>
+          <select name="industry" class="ts-select" id="industry" required>
+            <option value="">— search or select —</option>
             <option>Automotive &amp; Mobility</option><option>Broker</option>
             <option>Education</option><option>Financial Services &amp; Insurance</option>
             <option>Healthcare</option><option>Law Firms</option>
@@ -659,8 +839,8 @@
       <div class="r2">
         <div class="fg">
           <label>HQ Country <span class="req">*</span></label>
-          <select name="hqCountry" id="hqCountry" required>
-            <option value="">— select —</option>
+          <select name="hqCountry" class="ts-select" id="hqCountry" required>
+            <option value="">— search or select —</option>
             <option>Africa</option><option>Albania</option><option>Australia</option>
             <option>Austria</option><option>Bahamas</option><option>Belarus</option>
             <option>Brazil</option><option>Canada</option><option>Chile</option>
@@ -676,7 +856,7 @@
             <option>South Korea</option><option>Spain</option><option>Sweden</option>
             <option>Switzerland</option><option>The Netherlands</option>
             <option>The Philippines</option><option>Trinidad and Tobago</option>
-            <option>U.K.</option><option>U.S.A</option><option>UK</option>
+            <option>UK</option><option>USA</option>
           </select>
         </div>
         <div class="fg">
@@ -695,8 +875,8 @@
       <div class="r2">
         <div class="fg">
           <label>Customer Name <span class="req">*</span></label>
-          <select name="customerName" id="customerName" required>
-            <option value="">— select —</option>
+          <select name="customerName" class="ts-select" id="customerName" required>
+            <option value="">— search or select —</option>
             <option>Aanchal Kotwaney</option>
             <option>Aaron Kesmetis</option>
             <option>Aaron Miller</option>
@@ -2032,8 +2212,8 @@
         </div>
         <div class="fg">
           <label>Customer Name 2</label>
-          <select name="customerName2" id="customerName2">
-            <option value="">— select —</option>
+          <select name="customerName2" class="ts-select" id="customerName2">
+            <option value="">— search or select —</option>
             <option>Aanchal Kotwaney</option>
             <option>Aaron Kesmetis</option>
             <option>Aaron Miller</option>
@@ -3371,8 +3551,8 @@
       <div class="r2">
         <div class="fg">
           <label>Role <span class="req">*</span></label>
-          <select name="role" id="role" required>
-            <option value="">— select —</option>
+          <select name="role" class="ts-select" id="role" required>
+            <option value="">— search or select —</option>
             <option>Administrative Specialist</option><option>Angel Investor/Start up advisor</option>
             <option>Area Vice President</option><option>Assistant Treasurer, Risk Management &amp; Insurance</option>
             <option>Associate Director Vendor Management Healthcare</option>
@@ -3778,7 +3958,7 @@
       </div>
       <div class="fg">
         <label>Sales Rep <span class="req">*</span></label>
-        <select name="salesRep" id="salesRep" required>
+        <select name="salesRep" class="ts-select" id="salesRep" required>
           <option value="">— select —</option>
           <option>Alejandro Pardeiro</option><option>Amber Talley</option>
           <option>Anthony Tortolini</option><option>Brian Lindley</option>
@@ -3796,8 +3976,8 @@
       <div class="r3">
         <div class="fg">
           <label>City</label>
-          <select name="pocCity" id="pocCity">
-            <option value="">— select —</option>
+          <select name="pocCity" class="ts-select" id="pocCity">
+            <option value="">— search or select —</option>
             <option>Addison</option><option>Aguadilla</option><option>Akron</option><option>Allen</option>
             <option>Alpharetta</option><option>Amsterdam</option><option>Athens</option><option>Atlanta</option>
             <option>Aubrey</option><option>Aurora</option><option>Austin</option><option>Bainbridge</option>
@@ -3887,8 +4067,8 @@
         </div>
         <div class="fg">
           <label>State / Province</label>
-          <select name="pocState" id="pocState">
-            <option value="">— select —</option>
+          <select name="pocState" class="ts-select" id="pocState">
+            <option value="">— search or select —</option>
             <option>AL</option><option>AR</option><option>Athens</option><option>AZ</option>
             <option>Bahamas</option><option>Beijing</option><option>Brandenburg</option>
             <option>CA</option><option>Canada</option><option>CDC</option><option>CO</option>
@@ -3911,8 +4091,8 @@
         </div>
         <div class="fg">
           <label>Country <span class="req">*</span></label>
-          <select name="pocCountry" id="pocCountry" required>
-            <option value="">— select —</option>
+          <select name="pocCountry" class="ts-select" id="pocCountry" required>
+            <option value="">— search or select —</option>
             <option>Africa</option><option>Australia</option><option>Austria</option>
             <option>Bahamas</option><option>Brazil</option><option>Bulgaria</option>
             <option>Canada</option><option>Chile</option><option>China</option>
@@ -3928,7 +4108,7 @@
             <option>Serbia</option><option>Spain</option><option>Sweden</option>
             <option>Switzerland</option><option>The Netherlands</option>
             <option>The Philippines</option><option>Trinidad and Tobago</option>
-            <option>U.K.</option><option>U.S.A</option><option>UK</option>
+            <option>UK</option><option>USA</option>
           </select>
         </div>
       </div>
@@ -4010,6 +4190,126 @@
   }
 
   document.getElementById('date').value = new Date().toISOString().split('T')[0];
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<style>
+  /* ── Tom Select dark theme overrides ── */
+  .ts-wrapper { width: 100%; }
+  .ts-wrapper.single .ts-control {
+    background: #1a2236;
+    border: 1px solid #1e2d45;
+    border-radius: 10px;
+    color: #e8edf5;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    min-height: 42px;
+    padding: 0 38px 0 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+  .ts-wrapper.single.focus .ts-control,
+  .ts-wrapper.single .ts-control:focus {
+    border-color: #0072ff;
+    box-shadow: 0 0 0 3px rgba(0,114,255,0.15);
+    background-color: #1e2d45;
+    outline: none;
+  }
+  .ts-wrapper .ts-control .item { color: #e8edf5; }
+  .ts-wrapper .ts-control input {
+    color: #e8edf5 !important;
+    background: transparent !important;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+  }
+  .ts-wrapper .ts-control input::placeholder { color: #6b7a99; }
+  .ts-dropdown {
+    background: #111827;
+    border: 1px solid #1e2d45;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    margin-top: 4px;
+    overflow: hidden;
+    z-index: 9999;
+    position: absolute !important;
+  }
+  .ts-dropdown .ts-dropdown-content { max-height: 240px; overflow-y: auto; }
+  .ts-dropdown .option {
+    color: #94a3b8;
+    font-size: 13px;
+    padding: 9px 14px;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .ts-dropdown .option:hover,
+  .ts-dropdown .option.active { background: #1a2236; color: #e8edf5; }
+  .ts-dropdown .option.selected { color: #00c6ff; background: rgba(0,198,255,0.07); }
+  .ts-dropdown-content::-webkit-scrollbar { width: 4px; }
+  .ts-dropdown-content::-webkit-scrollbar-track { background: transparent; }
+  .ts-dropdown-content::-webkit-scrollbar-thumb { background: #1e2d45; border-radius: 4px; }
+  .ts-wrapper .ts-control .clear-button { color: #6b7a99; }
+  /* Search input inside dropdown */
+  .ts-dropdown .ts-dropdown-search-input {
+    background: #1a2236;
+    border-bottom: 1px solid #1e2d45;
+    padding: 10px 14px;
+  }
+  .ts-dropdown input.ts-dropdown-search-input {
+    width: 100%;
+    background: #1e2d45 !important;
+    border: 1px solid #2a3a55 !important;
+    border-radius: 6px !important;
+    color: #e8edf5 !important;
+    font-size: 13px;
+    padding: 6px 10px;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .no-results { color: #6b7a99; padding: 10px 14px; font-size: 13px; }
+
+  /* Hide the original select element but keep it in DOM for form POST */
+  .ts-wrapper + select { display: none !important; }
+  /* Caret icon hidden since we use background-image */
+  .ts-wrapper.single .ts-control::after { display: none !important; }
+</style>
+<script>
+  // Fields with >12 options get Tom Select search
+  const SEARCHABLE = ['brand','hqCountry','customerName','customerName2','role','pocCity','pocState','pocCountry','industry'];
+
+  const tomInstances = {};
+
+  SEARCHABLE.forEach(function(name) {
+    const el = document.querySelector('select[name="' + name + '"]');
+    if (!el) return;
+    tomInstances[name] = new TomSelect(el, {
+      maxOptions: null,
+      allowEmptyOption: true,
+      searchField: ['text'],
+      placeholder: '— search or select —',
+      render: {
+        no_results: function() {
+          return '<div class="no-results">No matches found</div>';
+        }
+      }
+    });
+  });
+
+  // Patch clearForm to also reset Tom Select instances
+  const _origClear = clearForm;
+  window.clearForm = function() {
+    _origClear();
+    Object.values(tomInstances).forEach(function(ts) {
+      ts.clear();
+      ts.clearOptions();
+      ts.sync();
+    });
+  };
 </script>
 </body>
 </html>
